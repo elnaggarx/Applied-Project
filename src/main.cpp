@@ -100,26 +100,50 @@ void Mainmenu(int *p,int *i){ //for main menu items
 	cleardevice();
    }
 }
+
 void game(int xmax,int ymax){
-	stars(xmax,ymax);
+	int speed=10;
+	int posx1=300;
+	int posx2;
+	int speedo=5;
+	int posy2=0;
+	int radius;
+	srand(time(0));
+	posx2 = (rand()% xmax )+1;
+	while(true){
 	//body of the spaceship
 	setfillstyle(1,DARKGRAY);
-	bar(300,330,325,420);
+	bar(posx1,330,posx1+25,420);
 	//head of the spaceship
-	line(300,330,313,310);
-	line(313,310,325,330);
+	int ap[]={posx1,330,posx1+13,310,posx1+25,330};
+	setfillstyle(1,RED);
+	fillpoly(3,ap);
 	//Wings of the spaceship
 	setcolor(BLACK);
-	line(245,420,300,420);
-	line(245,420,300,375);
-	line(380,420,325,420);
-	line(380,420,325,375);
-	int ap1[]={245,420,300,420,300,375}; //points of left wing
-	int ap2[]={380,420,325,420,325,375}; //points of right wing
+	int ap1[]={posx1-55,420,posx1,420,posx1,375}; //points of left wing
+	int ap2[]={posx1+80,420,posx1+25,420,posx1+25,375}; //points of right wing
 	setfillstyle(1,BLUE);
 	fillpoly(3,ap1);
 	fillpoly(3,ap2);
-
+	if(GetAsyncKeyState(VK_LEFT) && posx1>0){
+		posx1=posx1 - speed;
+	}
+	else if(GetAsyncKeyState(VK_RIGHT) && posx1<xmax){
+		posx1=posx1+speed;
+	}
+	radius = 50;
+	int ap3[]={posx2,posy2,posx2,posy2+40,posx2+50,posy2+40,posx2+50,posy2};
+	setfillstyle(1,RED);
+	fillpoly(4,ap3);
+	posy2+=speedo;
+	if(posy2>=ymax){
+		posy2=0;
+		posx2 = (rand()% xmax )+1;
+	}
+	delay(50);
+	cleardevice();
+	}
+	getch();
 }
 int main()
 {
