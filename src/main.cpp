@@ -4,6 +4,7 @@
 #include<stdio.h>
 #include<time.h>
 #include<mmsystem.h>
+//REMAINING SCORE--INCREASING SPEED--CRASH GAMEOVER
 void stars(int xmax,int ymax){ //function for galaxy stars background
 	int rxnumber , rynumber,i=0;
 	srand(time(0));
@@ -101,7 +102,7 @@ void Mainmenu(int *p,int *i){ //for main menu items
    }
 }
 
-void game(int xmax,int ymax){
+void game(int xmax,int ymax , int *p){
 	int speed=10;
 	int posx1=300;
 	int posx2;
@@ -133,17 +134,46 @@ void game(int xmax,int ymax){
 	}
 	radius = 50;
 	int ap3[]={posx2,posy2,posx2,posy2+40,posx2+50,posy2+40,posx2+50,posy2};
-	setfillstyle(1,RED);
+	setfillstyle(1,WHITE);
 	fillpoly(4,ap3);
 	posy2+=speedo;
 	if(posy2>=ymax){
 		posy2=0;
 		posx2 = (rand()% xmax )+1;
 	}
+	if((posy2+40)>=310 && posy2<=310 && posx2<=posx1 && (posx2+50)>=posx1){
+		cleardevice();
+		break;
+	}
+	else if(posy2>=330 && posy2<=420 && posx2>=posx1 && posx2<=(posx1+25)){
+		cleardevice();
+		break;
+	}
 	delay(50);
 	cleardevice();
 	}
+	PlaySound(NULL,NULL,0);
+	*p=0;
+	PlaySound(TEXT("..\\src\\GameOver.wav"),NULL,SND_ASYNC);
+    for(int i=3;i<=8;i++){
+		setcolor(WHITE);
+	    settextstyle(3,0,i);
+	    outtextxy(100,180,"GAME OVER");
+	    delay(500);
+	}
+	while(true){
+	setcolor(WHITE);
+	settextstyle(3,0,8);
+	outtextxy(100,180,"GAME OVER");
+	if(GetAsyncKeyState(VK_RETURN)){
+		*p++;
+	}
+	if(*p==1){
+		break;
+	}
+	}
 	getch();
+	cleardevice();
 }
 int main()
 {
@@ -172,11 +202,10 @@ int main()
 	cleardevice();
 	Mainmenu(&x,&w);
 	if(w==0){
-		game(xmax,ymax);
+		game(xmax,ymax,&x);
 	}
-	printf("%d",w);
+
 	getch();
 	closegraph();
-	std::cout << "Hello world!" << std::endl;
 	return 0;
 }
