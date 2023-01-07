@@ -102,13 +102,18 @@ void Mainmenu(int *p,int *i){ //for main menu items
    }
 }
 
-void game(int xmax,int ymax , int *p){
+void game(int xmax,int ymax , int *p,int *w ){
+	long loop=0,score,limit=100;
+	char str[20];
 	int speed=10;
 	int posx1=300;
 	int posx2;
-	int speedo=5;
+	int speedo=9;
 	int posy2=0;
-	int radius;
+	if(score>=limit){
+		speedo=speedo*2;
+		limit+=100;
+	}
 	srand(time(0));
 	posx2 = (rand()% xmax )+1;
 	while(true){
@@ -132,7 +137,6 @@ void game(int xmax,int ymax , int *p){
 	else if(GetAsyncKeyState(VK_RIGHT) && posx1<xmax){
 		posx1=posx1+speed;
 	}
-	radius = 50;
 	int ap3[]={posx2,posy2,posx2,posy2+40,posx2+50,posy2+40,posx2+50,posy2};
 	setfillstyle(1,WHITE);
 	fillpoly(4,ap3);
@@ -149,6 +153,16 @@ void game(int xmax,int ymax , int *p){
 		cleardevice();
 		break;
 	}
+	else if(posy2>=330 && posy2<=420 && (posx2+50)>=posx1 && (posx2+50)<=(posx1+25)){
+		cleardevice();
+		break;
+	}
+	stars(xmax,ymax);
+	score=loop*0.5;
+	sprintf(str,"%ld",score);
+	setcolor(WHITE);
+    outtextxy(100,100,str);
+	loop++;
 	delay(50);
 	cleardevice();
 	}
@@ -202,9 +216,8 @@ int main()
 	cleardevice();
 	Mainmenu(&x,&w);
 	if(w==0){
-		game(xmax,ymax,&x);
+		game(xmax,ymax,&x,&w);
 	}
-
 	getch();
 	closegraph();
 	return 0;
