@@ -1,9 +1,21 @@
+//By Mohamed Amr & Mohamed Hesham
+//Dr Hesham Salah & T.A Eng. Ahmed Zakaria
+//Enjoy----------------
 #include <iostream>
 #include<graphics.h>
 #include<windows.h>
 #include<stdio.h>
 #include<time.h>
 #include<mmsystem.h>
+#include<string.h>
+#include<stdlib.h>
+#pragma GCC diagnostic ignored "-Wwrite-strings"
+struct player{ //EDITED FROM ETCH
+	int count;
+    char Nick_Name[20]; //strings
+	long score;
+    float per;
+}; //struct
 //REMAINING SCORE--INCREASING SPEED--CRASH GAMEOVER
 void stars(int xmax,int ymax){ //function for galaxy stars background
 	int rxnumber , rynumber,i=0;
@@ -19,6 +31,7 @@ void text1(int xmax,int ymax){ //All the text in the start menu
 	outtextxy((xmax/2)-260,(ymax/2)-100,"StarWars");
 	settextstyle(3,0,2);
 	outtextxy((xmax/2)-100,(ymax/2)+20,"press any key to continue...");
+	stars(xmax,ymax);
 }
 void text1a(int xmax,int ymax){//for starwars text animation
 	for(int i=2;i<=9;i++){
@@ -26,10 +39,6 @@ void text1a(int xmax,int ymax){//for starwars text animation
 	    outtextxy((xmax/2)-260,(ymax/2)-100,"StarWars");
 		delay(1200);
 	}
-}
-void input(char nn[]){
-	printf("please enter your nickname \n");
-	gets(nn);
 }
 /*void MainmenuSelector(int *i,int *c){
 	if(*c==0){
@@ -63,13 +72,13 @@ void input(char nn[]){
 	    }
 	}
 }*/
-void Mainmenu(int *p,int *i){ //for main menu items
+void Mainmenu(int *p,int *i,int xmax,int ymax){ //for main menu items
    *p=0;
    *i=0;
    while(*p==0){
 	settextstyle(3,0,4);
 	outtextxy(277,150,"Start");
-	outtextxy(210,200,"Scoreboard");
+	outtextxy(288,200,"Exit");
 	if(GetAsyncKeyState(VK_RETURN)){
 		(*p)++;
 		if(*p!=0){
@@ -88,34 +97,38 @@ void Mainmenu(int *p,int *i){ //for main menu items
 		setcolor(14);
 	    outtextxy(277,150,"Start");
 		setcolor(15);
-		outtextxy(210,200,"Scoreboard");
+		outtextxy(288,200,"Exit");
 	}
 	else if(*i==1){
 		settextstyle(3,0,4);
 		setcolor(15);
 	    outtextxy(277,150,"Start");
 		setcolor(14);
-		outtextxy(210,200,"Scoreboard");
+		outtextxy(288,200,"Exit");
 	}
+	stars(xmax,ymax);
 	getch();
 	cleardevice();
    }
 }
 
-void game(int xmax,int ymax , int *p,int *w ){
-	long loop=0,score,limit=100;
+void game(int xmax,int ymax , int *p,int *w,long *score ){
+	long loop=0,limit=50;
 	char str[20];
 	int speed=10;
 	int posx1=300;
 	int posx2;
-	int speedo=9;
+	int speedo=14;
 	int posy2=0;
-	if(score>=limit){
-		speedo=speedo*2;
-		limit+=100;
-	}
+	int posx3;
+	int posy3 =0;
+	int posx4;
+	int posy4=0;
 	srand(time(0));
 	posx2 = (rand()% xmax )+1;
+	posx3 = (rand()% xmax )+1;
+	posx4 = (rand()% xmax )+1;
+	
 	while(true){
 	//body of the spaceship
 	setfillstyle(1,DARKGRAY);
@@ -131,20 +144,38 @@ void game(int xmax,int ymax , int *p,int *w ){
 	setfillstyle(1,BLUE);
 	fillpoly(3,ap1);
 	fillpoly(3,ap2);
+	if((*score)>=limit){
+		speedo=speedo*1.5;
+		limit+=50;
+	}
 	if(GetAsyncKeyState(VK_LEFT) && posx1>0){
 		posx1=posx1 - speed;
 	}
 	else if(GetAsyncKeyState(VK_RIGHT) && posx1<xmax){
 		posx1=posx1+speed;
 	}
+	//obstacles
 	int ap3[]={posx2,posy2,posx2,posy2+40,posx2+50,posy2+40,posx2+50,posy2};
-	setfillstyle(1,WHITE);
+	setfillstyle(1,YELLOW);
 	fillpoly(4,ap3);
+	int ap4[]={posx3,posy3,posx3,posy3+40,posx3+50,posy3+40,posx3+50,posy3};
+	setfillstyle(1,YELLOW);
+	fillpoly(4,ap4);
+	int ap5[]={posx4,posy4,posx4,posy4+40,posx4+50,posy4+40,posx4+50,posy4};
+	setfillstyle(1,YELLOW);
+	fillpoly(4,ap5);
 	posy2+=speedo;
-	if(posy2>=ymax){
+	posy3+=speedo;
+	posy4+=speedo;
+	if(posy2>=ymax && posy4>=ymax && posy3>=ymax ){
 		posy2=0;
-		posx2 = (rand()% xmax )+1;
+		posy3=0;
+		posy4=0;
+	    posx2 = (rand()% xmax )+1;
+		posx3 = (rand()% xmax )+1;
+	    posx4 = (rand()% xmax )+1;
 	}
+
 	if((posy2+40)>=310 && posy2<=310 && posx2<=posx1 && (posx2+50)>=posx1){
 		cleardevice();
 		break;
@@ -157,15 +188,39 @@ void game(int xmax,int ymax , int *p,int *w ){
 		cleardevice();
 		break;
 	}
+	if((posy3+40)>=310 && posy3<=310 && posx3<=posx1 && (posx3+50)>=posx1){
+		cleardevice();
+		break;
+	}
+	else if(posy3>=330 && posy3<=420 && posx3>=posx1 && posx3<=(posx1+25)){
+		cleardevice();
+		break;
+	}
+	else if(posy3>=330 && posy3<=420 && (posx3+50)>=posx1 && (posx3+50)<=(posx1+25)){
+		cleardevice();
+		break;
+	}
+	if((posy4+40)>=310 && posy4<=310 && posx4<=posx1 && (posx4+50)>=posx1){
+		cleardevice();
+		break;
+	}
+	else if(posy4>=330 && posy4<=420 && posx4>=posx1 && posx4<=(posx1+25)){
+		cleardevice();
+		break;
+	}
+	else if(posy4>=330 && posy4<=420 && (posx4+50)>=posx1 && (posx4+50)<=(posx1+25)){
+		cleardevice();
+		break;
+	}
 	stars(xmax,ymax);
-	score=loop*0.5;
-	sprintf(str,"%ld",score);
+	*score=loop*0.5;
+	sprintf(str,"%ld",*score);
 	setcolor(WHITE);
     outtextxy(100,100,str);
 	loop++;
 	delay(50);
 	cleardevice();
-	}
+	} 
 	PlaySound(NULL,NULL,0);
 	*p=0;
 	PlaySound(TEXT("..\\src\\GameOver.wav"),NULL,SND_ASYNC);
@@ -186,17 +241,20 @@ void game(int xmax,int ymax , int *p,int *w ){
 		break;
 	}
 	}
+	
 	getch();
 	cleardevice();
 }
 int main()
 {
+	struct player info;
+	info.score=0;
 	int xmax,ymax;//For maximum x&y co-ordinates
 	int x=0; //for detecting return key
 	char nn[30]; //To hold nickname string
 	int w; //For detecting menu selector
+	long score1;
 	int gd = DETECT , gm;
-	input(nn);
 	//starwars theme song  RELATIVE PATH NEEDED : CORRECTED
 	PlaySound(TEXT("..\\src\\Theme.wav"), NULL, SND_LOOP | SND_ASYNC);
 	initgraph(&gd,&gm,(char*)"");
@@ -214,11 +272,97 @@ int main()
 	}
 	getch(); // 46-47 not functioning code lines to be corrected MODIFIED : CORRECTED 
 	cleardevice();
-	Mainmenu(&x,&w);
+	Mainmenu(&x,&w,xmax,ymax);
 	if(w==0){
-		game(xmax,ymax,&x,&w);
+		game(xmax,ymax,&x,&w,&score1);
+		info.score=score1;
+		printf("Your Score : %ld",score1);
+		char another;
+        FILE *fp;
+        do{
+			system("cls");
+			printf("\t\t\t\t*Add Players Info*\n\n\n"); 
+			fp=fopen("information.txt","a"); 
+			printf("\n\t\t\tEnter Your Nick Name     : ");
+			gets(info.Nick_Name);
+			info.score=score1;
+			printf("\n\t\t\t__\n");       
+			if(fp==NULL){
+				fprintf(stderr,"can't open file");
+		    }
+			else{
+				printf("\t\t\t Data stored successfuly\n");
+            }
+            fwrite(&info, sizeof(struct player), 1, fp); 
+            fclose(fp);
+            printf("\t\t\tYou want to add another record?(y/n) : ");
+            scanf("%c",&another);
+        }while(another=='y'||another=='Y');
+		fp=fopen("information.txt","r");
+		printf("\t\t\t\t*PlAYERS DASHBORAD*\n\n\n");
+		if(fp==NULL){
+        fprintf(stderr,"can't open file\n");
+        exit(0);
+		}
+		else{
+        printf("\t\t\t\t Data :\n");
+        printf("\t\t\t\t___\n\n");
+		}
+        while(fread(&info,sizeof(struct player),1,fp)){
+			printf("\n\t\t\t\t Player Name  : %s",info.Nick_Name);
+			printf("\n\t\t\t\t\t Score  : %ld",info.score);
+			printf("\n\t\t\t\t __\n");
+		}
+        fclose(fp);
+		int r;
+		printf("please enter the number of players you want to view their score\t");
+		scanf("%d",&r);
+		long *k= (long *)malloc(sizeof(long)*r); //malloc (1d long array for scores)
+		fp = fopen("information.txt","r");
+		int b=0;
+		while(fread(&info,sizeof(struct player),1,fp)){
+			if(b==r){
+				break;
+			}
+			k[b]=info.score;
+			b++;
+		}
+		fclose(fp);
+		for(b=0;b<r;b++){
+			printf("\n\nscore %d = %d",b,(int)k[b]);
+		}
+		printf("\n\n\t\t**enter the first letter of any player**  \t\t\n:");
+		char l;
+		int u=0;
+		char names[5][30]; //2d array
+		scanf("%s",&l);
+		fp = fopen("information.txt","r");
+		while(fread(&info,sizeof(struct player),1,fp)){ //linear search
+			if(u>=5){
+				break;
+			}
+			if(info.Nick_Name[0]==l){
+				strcpy(names[u],info.Nick_Name);
+				u++;
+			}
+		}
+		for(int g=0;g<5;g++){
+			if(names[g][0]!='\0'){
+				puts(names[g]);
+			}
+		}
+		fclose(fp);
 	}
-	getch();
+	else if(w==1){
+		closegraph();
+		return 0;
+	}
+    x=0;
+	while(x==0){
+		if(GetAsyncKeyState(VK_RETURN)){
+			x = x+1;
+		}
+	}
 	closegraph();
 	return 0;
 }
