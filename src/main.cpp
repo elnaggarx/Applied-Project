@@ -324,8 +324,10 @@ int main()
 			if(b==r){
 				break;
 			}
-			k[b]=info.score;
-			b++;
+			//if(info.score!=NULL){
+				k[b]=info.score;
+			    b++;
+			//}
 		}
 		fclose(fp);
 		for(b=0;b<r;b++){
@@ -335,7 +337,7 @@ int main()
 		char l;
 		int u=0;
 		char names[5][30]; //2d array
-		scanf("%s",&l);
+		scanf("%s",&l); //doesnt want to read a char %c
 		fp = fopen("information.txt","r");
 		while(fread(&info,sizeof(struct player),1,fp)){ //linear search
 			if(u>=5){
@@ -346,12 +348,12 @@ int main()
 				u++;
 			}
 		}
+		fclose(fp);
 		for(int g=0;g<5;g++){
-			if(names[g][0]!='\0'){
+			if(names[g][0]!='\0'){ //names[g][0]==l
 				puts(names[g]);
 			}
 		}
-		fclose(fp);
 	}
 	else if(w==1){
 		closegraph();
